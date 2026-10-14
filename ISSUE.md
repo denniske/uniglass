@@ -1,5 +1,3 @@
-**Title:** withUniwind turns any prop ending in `Style` into a style array (breaks `glassEffectStyle` on expo-glass-effect's GlassView)
-
 ### What happened?
 
 `withUniwind` treats every prop whose name ends in `Style` as a style prop:
@@ -21,22 +19,19 @@ const UniGlassView = withUniwind(GlassView);
 <UniGlassView className="h-16 rounded-2xl" />
 ```
 
-Passing `[undefined, 'regular']` to a plain, unwrapped `GlassView` reproduces the same blank result, which confirms the array is the cause. This is not the radius issue from #123: per-corner radii (what `rounded-*` compiles to) render fine on the same device.
+Passing `[undefined, 'regular']` to a plain, unwrapped `GlassView` reproduces the same blank result, which confirms the array is the cause. This is not the radius issue from #123: per-corner radii (what `rounded-*` compiles to) render fine on the same device. Any other prop that ends in `Style` but isn't a style object will hit the same problem.
 
-Any other prop that ends in `Style` but isn't a style object will hit the same problem.
+**Expected:** only treat a `*Style` prop as a style when a matching `*ClassName` prop is passed (or offer a way to exclude props); otherwise pass the value through unchanged.
 
-### Expected
-
-Either only treat `*Style` props as styles when a matching `*ClassName` prop is passed, or provide a way to exclude props from auto-detection. At minimum, pass the value through unchanged when there is no corresponding class name.
-
-### Workarounds
-
-- Leave the prop out when its default is acceptable.
-- Rename the prop through an inner component:
+**Workarounds:** leave the prop out when its default is fine, or rename it through an inner component:
 
 ```tsx
 const UniGlassView = withUniwind(({ effect, ...props }) => <GlassView glassEffectStyle={effect} {...props} />);
 ```
+
+Screenshot from the repro (iOS 27 simulator): bars B and D are blank, A, C, E and F render glass.
+
+![repro](https://raw.githubusercontent.com/denniske/uniglass/master/repro.png)
 
 ### Steps to Reproduce
 
@@ -49,16 +44,22 @@ const UniGlassView = withUniwind(({ effect, ...props }) => <GlassView glassEffec
 
 https://github.com/denniske/uniglass
 
-The repro renders six bars stacked on a striped background: plain style (works), Uniwind with `glassEffectStyle` (blank), plain `GlassView` with the array value (blank), rename workaround (works), Uniwind without the prop (works), and a re-render-after-mount check (works).
-
 ### Uniwind version
 
 1.12.2
 
 ### React Native Version
 
-0.86.3 (Expo SDK 57, expo-glass-effect 57.0.4)
+0.86.3
 
 ### Platforms
 
-iOS (tested on the iOS 27.0 simulator, iPhone 18 Pro)
+iOS
+
+### Expo
+
+Yes
+
+### Additional information 〰
+
+- [X] I've searched for [similar issues in this repository](https://github.com/uni-stack/uniwind/issues) and found none

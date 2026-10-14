@@ -49,7 +49,7 @@ const UniGlassView = withUniwind(({ effect, ...props }) => <GlassView glassEffec
 
 https://github.com/denniske/uniglass
 
-The repro renders six bars side by side: plain style (works), Uniwind with `glassEffectStyle` (blank), plain `GlassView` with the array value (blank), rename workaround (works), Uniwind without the prop (works), and a re-render-after-mount check (works).
+The repro renders six bars stacked on a striped background: plain style (works), Uniwind with `glassEffectStyle` (blank), plain `GlassView` with the array value (blank), rename workaround (works), Uniwind without the prop (works), and a re-render-after-mount check (works).
 
 ### Uniwind version
 
